@@ -183,8 +183,15 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.xforward.headers.customrequestheaders.X-Forwarded-Proto=https"
+      # Security headers middleware (HSTS, clickjacking, MIME sniffing, referrer policy)
+      - "traefik.http.middlewares.securityheaders.headers.stsincludesubdomains=true"
+      - "traefik.http.middlewares.securityheaders.headers.stspreload=true"
+      - "traefik.http.middlewares.securityheaders.headers.stsseconds=31536000"
+      - "traefik.http.middlewares.securityheaders.headers.framedeny=true"
+      - "traefik.http.middlewares.securityheaders.headers.contenttypenosniff=true"
+      - "traefik.http.middlewares.securityheaders.headers.referrerpolicy=strict-origin-when-cross-origin"
       - "traefik.http.routers.sodar-web.entrypoints=websecure"
-      - "traefik.http.routers.sodar-web.middlewares=xforward"
+      - "traefik.http.routers.sodar-web.middlewares=xforward,securityheaders"
       - "traefik.http.routers.sodar-web.rule=HostRegexp(`{catchall:.+}`)"
       - "traefik.http.services.sodar-web.loadbalancer.server.port=8080"
       - "traefik.http.routers.sodar-web.tls=true"
@@ -210,6 +217,10 @@ services:
     depends_on:
       - sodar-web
     restart: unless-stopped
+    volumes:
+      - type: bind  # Traefik configuration for shared certs
+        source: ./config/traefik/tls
+        target: /etc/traefik/tls
 
   sodar-celeryd-default:
     <<: *default-sodar
@@ -227,6 +238,9 @@ services:
       - type: bind
         source: ./config/sodar
         target: /etc/sodar
+      - type: bind  # Traefik configuration for shared certs
+        source: ./config/traefik/tls
+        target: /etc/traefik/tls
 
 networks:
   sodar:
