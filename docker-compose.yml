@@ -202,7 +202,7 @@ services:
       - "traefik.http.middlewares.securityheaders.headers.referrerpolicy=strict-origin-when-cross-origin"
       - "traefik.http.routers.sodar-web.entrypoints=websecure"
       - "traefik.http.routers.sodar-web.middlewares=xforward,securityheaders"
-      - "traefik.http.routers.sodar-web.rule=HostRegexp(`{catchall:.+}`)"
+      - "traefik.http.routers.sodar-web.rule=HostRegexp(`.+`)"
       - "traefik.http.services.sodar-web.loadbalancer.server.port=8080"
       - "traefik.http.routers.sodar-web.tls=true"
     volumes:

@@ -16,6 +16,7 @@
 - Upgrade to traefik v3.7 (#101)
 - Fix iRODS ticket support example (#112)
 - Cleanup `.gitignore` (#106)
+- Upgrade Traefik to v3.7 (#101)
 
 ## v1.2-2 (2025-11-26)
 
